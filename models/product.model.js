@@ -17,7 +17,7 @@ productModel.getAll = async () => {
 productModel.getById = async (id) => {
 	const query = util.promisify(conn.query).bind(conn)
 	const result = await query(`
-		SELECT * FROM products_db
+		SELECT * FROM ${process.env.DB_NAME}
 		WHERE product_id = '${id}'
 	`)
 
@@ -32,7 +32,7 @@ productModel.create = async ({prodName, prodDesc, prodPrice}) => {
 	const query = util.promisify(conn.query).bind(conn)
 	const today = new Date()
 	const result = await query(`
-		INSERT INTO products_db (product_title, product_desc, product_price, created_at) VALUES (
+		INSERT INTO ${process.env.DB_NAME} (product_title, product_desc, product_price, created_at) VALUES (
 			'${prodName}', '${prodDesc}', ${prodPrice}, '${today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDay()}'
 		)
 	`)
@@ -46,7 +46,7 @@ productModel.change = async (newData) => {
 
 
 	const result = await query(`
-		UPDATE products_db
+		UPDATE ${process.env.DB_NAME}
 		SET
 			product_title = '${newData.prodName}',
 			product_desc = '${newData.prodDesc}',
@@ -63,7 +63,7 @@ productModel.delete = async (id) => {
 	const query = util.promisify(conn.query).bind(conn)
 
 	const result = await query(`
-		DELETE FROM products_db WHERE product_id = ${id}
+		DELETE FROM ${process.env.DB_NAME} WHERE product_id = ${id}
 	`)
 
 	return result.affectedRows
