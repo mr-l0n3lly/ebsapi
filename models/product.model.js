@@ -5,7 +5,7 @@ const productModel = {}
 
 productModel.getAll = async () => {
 	const query = util.promisify(conn.query).bind(conn)
-	const result = await query(`SELECT * FROM products_db`)
+	const result = await query(`SELECT * FROM ${process.env.DB_NAME}`)
 
 	if (!result) {
 		return []

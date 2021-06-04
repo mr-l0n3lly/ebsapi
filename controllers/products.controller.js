@@ -4,44 +4,28 @@ const Products = require('../models/product.model')
 const productsController = {}
 
 
-productsController.index = catchAsync(async (req, res, next) => {
-	try {
-		const products = await Products.getAll()
+productsController.index = catchAsync(async (req, res) => {
+	const products = await Products.getAll()
 
-		res.status(200).json({
-			status: true,
-			data: products,
-		})
-	} catch (e) {
-		next(e)
-		res.status(500).json({
-			status: false,
-			message: 'Something wrong on the server',
-		})
-	}
+	res.status(200).json({
+		status: true,
+		data: products,
+	})
 })
 
-productsController.getById = catchAsync(async (req, res, next) => {
-	try {
-		const {id} = req.params
-		const product = await Products.getById(id)
+productsController.getById = catchAsync(async (req, res) => {
+	const {id} = req.params
+	const product = await Products.getById(id)
 
-		if (!product.length) {
-			res.status(404).json({
-				status: false,
-				message: 'Error no product like this on server',
-			})
-		} else {
-			res.status(200).json({
-				status: true,
-				data: product,
-			})
-		}
-	} catch (e) {
-		next(e)
-		res.status(500).json({
+	if (!product.length) {
+		res.status(404).json({
 			status: false,
-			message: 'Something wrong on the server',
+			message: 'Error no product like this on server',
+		})
+	} else {
+		res.status(200).json({
+			status: true,
+			data: product,
 		})
 	}
 })
@@ -78,19 +62,19 @@ productsController.create = catchAsync(async (req, res) => {
 })
 
 productsController.modify = catchAsync(async (req, res) => {
-	const { id, prodName, prodDesc, prodPrice } = req.body
+	const {id, prodName, prodDesc, prodPrice} = req.body
 
 	if (!id || !prodName || !prodDesc || !prodPrice) {
 		res.status(400).json({
 			status: false,
-			message: 'Data missing when modifying'
+			message: 'Data missing when modifying',
 		})
 	} else {
 		const response = await Products.change({
 			id,
 			prodName,
 			prodDesc,
-			prodPrice
+			prodPrice,
 		})
 
 		if (!response) {
@@ -113,7 +97,7 @@ productsController.remove = catchAsync(async (req, res) => {
 	if (!id) {
 		res.status(400).json({
 			status: false,
-			message: 'Data missing when modifying'
+			message: 'Data missing when modifying',
 		})
 	} else {
 		const response = Products.delete(id)
