@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { body } = require('express-validator')
+const { body, param } = require('express-validator')
 const productsController = require('../controllers/products.controller')
 
 /**
@@ -21,7 +21,11 @@ router.get('/', productsController.index)
  * @apiSuccess {Boolean} status The status of current get
  * @apiSuccess {Array} data One element array with a product in case if product exists
  */
-router.get('/:id', body('id').isNumeric({ no_symbols: true }), productsController.getById)
+router.get('/:id', [
+        param('id').exists().toInt().custom(id => id > 0),
+    ],
+    productsController.getById,
+)
 
 /**
  * @api {post} /products/ Create a new product
@@ -59,7 +63,7 @@ router.post('/', [
  * @apiSuccess {String} message The message from the server about error or success insertion
  */
 router.put('/:id', [
-        body('id').isNumeric({ no_symbols: true }),
+        param('id').exists().toInt().custom(id => id > 0),
         body('prodName').not().isEmpty().trim().escape(),
         body('prodDesc').not().isEmpty().trim().escape(),
         body('prodPrice').not().isEmpty().trim().escape(),
@@ -79,6 +83,11 @@ router.put('/:id', [
  * @apiSuccess {Boolean} status The status of current operation
  * @apiSuccess {String} message The message from the server about error or success insertion
  */
-router.delete('/:id', body('id').isNumeric({ no_symbols: true }), productsController.remove)
+router.delete('/:id', [
+        param('id').exists().toInt().custom(id => id > 0),
+
+    ],
+    productsController.remove,
+)
 
 module.exports = router
