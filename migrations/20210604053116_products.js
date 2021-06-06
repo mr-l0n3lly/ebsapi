@@ -4,7 +4,7 @@ exports.up = function (knex) {
 		table.string('product_title').notNullable()
 		table.string('product_desc').notNullable()
 		table.integer('product_price').notNullable()
-		table.timestamp('created_at').notNullable()
+		table.dateTime('created_at').notNullable()
 	})
 }
 

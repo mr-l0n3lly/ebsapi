@@ -6,7 +6,7 @@ function createRecord(knex, id) {
 		product_title: faker.commerce.productName(),
 		product_desc: faker.commerce.productDescription(),
 		product_price: faker.commerce.price(),
-		created_at: faker.date.past(),
+		created_at: faker.datatype.datetime(),
 	})
 }
 

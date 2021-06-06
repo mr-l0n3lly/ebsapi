@@ -18,10 +18,13 @@ app.use(bodyParser.urlencoded({extended: true}))
 
 app.use('/products', productsRouter)
 
-app.use((err, res, req, next) => {
+app.use((err, res) => {
 	// eslint-disable-next-line no-console
 	console.log(err.stack)
-	res.send(500).send('Something broke on server!')
+	res.status(500).json({
+		status: false,
+		message: 'Something wrong on the server',
+	})
 })
 
 module.exports = app

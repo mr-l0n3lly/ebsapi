@@ -1,4 +1,5 @@
 const router = require('express').Router()
+const { body } = require('express-validator')
 const productsController = require('../controllers/products.controller')
 
 /**
@@ -20,14 +21,14 @@ router.get('/', productsController.index)
  * @apiSuccess {Boolean} status The status of current get
  * @apiSuccess {Array} data One element array with a product in case if product exists
  */
-router.get('/:id', productsController.getById)
+router.get('/:id', body('id').isNumeric({ no_symbols: true }), productsController.getById)
 
 /**
  * @api {post} /products/ Create a new product
  *
- * @apiParam {String} product_title The title of product
- * @apiParam {String} product_desc The description of inserted product
- * @apiParam {Number} product_price The price of product
+ * @apiParam {String} prodName The title of product
+ * @apiParam {String} prodDesc The description of inserted product
+ * @apiParam {Number} prodPrice The price of product
  *
  * @apiName CreateProduct
  * @apiGroup Products
@@ -35,15 +36,21 @@ router.get('/:id', productsController.getById)
  * @apiSuccess {Boolean} status The status of current operation
  * @apiSuccess {String} message The message from the server about error or success insertion
  */
-router.post('/', productsController.create)
+router.post('/', [
+        body('prodName').not().isEmpty().trim().escape(),
+        body('prodDesc').not().isEmpty().trim().escape(),
+        body('prodPrice').not().isEmpty().trim().escape(),
+    ],
+    productsController.create,
+)
 
 /**
  * @api {put} /products/:id Update a specific product
  *
- * @apiParam {Number} product_id The unique ID of product which we want to update
- * @apiParam {String} product_title The title of product
- * @apiParam {String} product_desc The description of inserted product
- * @apiParam {Number} product_price The price of product
+ * @apiParam {Number} id The unique ID of product which we want to update
+ * @apiParam {String} prodName The title of product
+ * @apiParam {String} prodDesc The description of inserted product
+ * @apiParam {Number} prodPrice The price of product
  *
  * @apiName UpdateProduct
  * @apiGroup Products
@@ -51,13 +58,20 @@ router.post('/', productsController.create)
  * @apiSuccess {Boolean} status The status of current operation
  * @apiSuccess {String} message The message from the server about error or success insertion
  */
-router.put('/:id', productsController.modify)
+router.put('/:id', [
+        body('id').isNumeric({ no_symbols: true }),
+        body('prodName').not().isEmpty().trim().escape(),
+        body('prodDesc').not().isEmpty().trim().escape(),
+        body('prodPrice').not().isEmpty().trim().escape(),
+    ],
+    productsController.modify,
+)
 
 
 /**
  * @api {delete} /products/:id Delete specific product
  *
- * @apiParam {Number} product_id The unique ID of product which we want to delete
+ * @apiParam {Number} id The unique ID of product which we want to delete
  *
  * @apiName DeleteProduct
  * @apiGroup Products
@@ -65,6 +79,6 @@ router.put('/:id', productsController.modify)
  * @apiSuccess {Boolean} status The status of current operation
  * @apiSuccess {String} message The message from the server about error or success insertion
  */
-router.delete('/:id', productsController.remove)
+router.delete('/:id', body('id').isNumeric({ no_symbols: true }), productsController.remove)
 
 module.exports = router

@@ -1,3 +1,4 @@
+const {validationResult} = require('express-validator')
 const catchAsync = require('../utils/catchAsync')
 const Products = require('../models/product.model')
 
@@ -13,7 +14,17 @@ productsController.index = catchAsync(async (req, res) => {
 	})
 })
 
+// eslint-disable-next-line consistent-return
 productsController.getById = catchAsync(async (req, res) => {
+	const errors = validationResult(req)
+
+	if (!errors.isEmpty()) {
+		return res.status(400).json({
+			status: false,
+			message: errors,
+		})
+	}
+
 	const {id} = req.params
 	const product = await Products.getById(id)
 
@@ -30,38 +41,51 @@ productsController.getById = catchAsync(async (req, res) => {
 	}
 })
 
+// eslint-disable-next-line consistent-return
 productsController.create = catchAsync(async (req, res) => {
+	const errors = validationResult(req)
+
+	if (!errors.isEmpty()) {
+		return res.status(400).json({
+			status: false,
+			message: errors,
+		})
+	}
+
 	const {prodName, prodDesc, prodPrice} = req.body
 
-	if (!prodName || !prodDesc || !prodPrice) {
-		res.status(400).json({
+	const product = {
+		prodName,
+		prodDesc,
+		prodPrice,
+	}
+
+	const response = await Products.create(product)
+
+	if (!response) {
+		res.status(500).json({
 			status: false,
-			message: 'Incomplete data',
+			message: 'Error uploading to bd',
 		})
 	} else {
-		const product = {
-			prodName,
-			prodDesc,
-			prodPrice,
-		}
-
-		const response = await Products.create(product)
-
-		if (!response) {
-			res.status(500).json({
-				status: false,
-				message: 'Error uploading to bd',
-			})
-		} else {
-			res.status(200).json({
-				status: true,
-				message: 'Product added successfully',
-			})
-		}
+		res.status(200).json({
+			status: true,
+			message: 'Product added successfully',
+		})
 	}
 })
 
+// eslint-disable-next-line consistent-return
 productsController.modify = catchAsync(async (req, res) => {
+	const errors = validationResult(req)
+
+	if (!errors.isEmpty()) {
+		return res.status(400).json({
+			status: false,
+			message: errors,
+		})
+	}
+
 	const {id, prodName, prodDesc, prodPrice} = req.body
 
 	if (!id || !prodName || !prodDesc || !prodPrice) {
@@ -91,7 +115,17 @@ productsController.modify = catchAsync(async (req, res) => {
 	}
 })
 
+// eslint-disable-next-line consistent-return
 productsController.remove = catchAsync(async (req, res) => {
+	const errors = validationResult(req)
+
+	if (!errors.isEmpty()) {
+		return res.status(400).json({
+			status: false,
+			message: errors,
+		})
+	}
+
 	const {id} = req.body
 
 	if (!id) {
