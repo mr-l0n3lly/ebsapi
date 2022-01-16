@@ -3,20 +3,20 @@
 module.exports = {
 
   development: {
-    client: 'mysql',
+    client: 'mysql2',
     connection: {
       database: 'products',
       user: 'root',
-      password: 'l@mbd@m3'
+      password: 'passwd'
     }
   },
 
   staging: {
-    client: 'mysql',
+    client: 'mysql2',
     connection: {
       database: 'products',
       user: 'root',
-      password: 'l@mbd@m3'
+      password: 'passwd'
     },
     pool: {
       min: 2,
@@ -28,11 +28,11 @@ module.exports = {
   },
 
   production: {
-    client: 'mysql',
+    client: 'mysql2',
     connection: {
       database: 'products',
       user: 'root',
-      password: 'l@mbd@m3'
+      password: 'passwd'
     },
     pool: {
       min: 2,
